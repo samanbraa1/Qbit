@@ -10,6 +10,8 @@ operator = '=='
 token_patterns = [
     (r'\bprint\b', 'PRINT'),                    # Matches the print keyword
     (r'\bif\b', 'IF'),                           # Matches the if keyword
+    (r':', 'seperator'), 
+    (r'\bFUNCTION\b', "FUNCTION"),
     (r'\b endif\b', 'ENDIF'),
     (r'\bwhile\b', 'WHILE'),                           # Matches the if keyword
     (r'\b endw\b', 'ENDW'), 
