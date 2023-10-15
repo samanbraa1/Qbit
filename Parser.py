@@ -18,6 +18,7 @@ class Parser:
         elif tokens[0][1] == "IF":
 
             return self.if_parser.parse_if(tokens)
+
         elif tokens[0][1] == "WHILE":
 
             return self.whileparser.parse_while(tokens)
@@ -136,18 +137,60 @@ class IfParser:
         self,
         tokens,
     ):
+        # cheack if stetment exist
         if tokens[0][1] == "IF":
             ex_p = ExpressionParser()
-            expres = tokens[2:7]
-            expression = ex_p.parse_expression(expres)
-            if str(expression) == "True":
+            expres =  [item for item in tokens if item[0] != 'if']
+            index = next((i for i, (token, _) in enumerate(expres) if token == ' '), None)
+
+    # Delete the first 'WHITESPACE' token if found
+        if index is not None:
+            del expres[index]
+            index = None
+
+
+        for i, item in enumerate(expres):
+            if item[0] == ':':
+                index = i
+                break
+
+        if index is not None:
+            # Print the rest of the list starting from the tuple with ':'
+            expres=expres[:index]
+        else:
+            print("Key not found!")
+
+
+        expression = ex_p.parse_expression(expres)
+
+
+        if str(expression) == "True":
                 print("if ")
-                ex_p1 = ExpressionParser()
-                x = self.parse_block(tokens[8:])
-                expres2 = PrintParser.parse_print(self, x)
+                if tokens[16:]:
+                    # if and or oprate exsit
+                    ex_p2 = self.parse_block(tokens[16:])
+                else:
+                    ## if noramal exsit
+                    ex_p2 = self.parse_block(tokens[8:])
+
+
+                
+
+                index = next((i for i, (token, _) in enumerate(ex_p2) if token == ' '), None)
+
+                if index is not None:
+                    
+                    del ex_p2[index]
+                    index = None
+
+                expres2 = parser_ins.parse(ex_p2)
+
                 return expres2
         else:
+            
             raise ParserError("Invalid if statement.")
+        
+
 
     def parse_block(self, tokens):
         block = []
@@ -203,6 +246,8 @@ class whileParser:
                 index += 1
 
         raise ParserError("Missing ENDIF statement.")
+
+
 
 
 parser_ins = Parser()
